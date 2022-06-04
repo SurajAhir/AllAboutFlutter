@@ -1,0 +1,71 @@
+/*****in pupspec.yaml dependencies****/
+flutter_localizations: # ADD
+    sdk: flutter
+  intl: ^0.17.0-nullsafety.2
+   /******in flutter section*********/
+   generate: true
+ 
+/********create a yaml file in root project as(l10y.ymal) and this content**********/
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+
+/********in lib directory create a directory l10n and then create a .arb file as(app_en.arb,app_hi.arb,app_es.arb) and define your key and values init***************/
+{
+  "helloWorld": "गीक्स फॉर गीक्स ",
+  "displayText":"यह एक सैंपल ऐप है"
+}
+
+/************in MaterialApp add the following lines************/
+ onGenerateTitle: (context) => AppLocalizations.of(context).helloWorld,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      
+      
+  /********ToChangeTextLanguage add like this*************/
+  Text(AppLocalizations.of(context).helloWorld),
+  
+  /********all code is below*********/
+  
+  import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+void main() {
+runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+// This widget is the root of your application.
+@override
+Widget build(BuildContext context) {
+	return MaterialApp(
+	onGenerateTitle: (context) => AppLocalizations.of(context).helloWorld,
+	localizationsDelegates: AppLocalizations.localizationsDelegates,
+	supportedLocales: AppLocalizations.supportedLocales,
+	theme: ThemeData(primarySwatch: Colors.green),
+	home: MyHomePage(),
+	);
+}
+}
+
+class MyHomePage extends StatefulWidget {
+@override
+_MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+@override
+Widget build(BuildContext context) {
+	return Scaffold(
+	appBar: AppBar(
+		title: Text(AppLocalizations.of(context).helloWorld),
+	),
+	body: Center(
+		child: Text(
+		AppLocalizations.of(context).displayText,
+		style: TextStyle(fontSize: 30),
+		),
+	),
+	);
+}
+}
