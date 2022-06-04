@@ -1,0 +1,68 @@
+dependencies:
+   get: #any version
+   
+import 'package:get/get.dart';    
+
+/*********create a class named LocaleString**********/
+
+class LocaleString extends Translations{
+  @override
+  // TODO: implement keys
+  Map<String, Map<String, String>> get keys => {
+     //ENGLISH LANGUAGE
+    'en_US':{
+      'hello':'Hello World',
+      'message':'Welcome to Proto Coders Point',
+      'title':'Flutter Language - Localization',
+      'sub':'Subscribe Now',
+      'changelang':'Change Language'
+    },
+     //HINDI LANGUAGE
+    'hi_IN':{
+      'hello': 'नमस्ते दुनिया',
+      'message':'प्रोटो कोडर प्वाइंट में आपका स्वागत है',
+      'title':'स्पंदन भाषा - स्थानीयकरण',
+      'subscribe':'सब्सक्राइब',
+      'changelang':'भाषा बदलो'
+    },
+    //KANNADA LANGUAGE
+    'kn_IN':{
+      'hello': 'ಹಲೋ ವರ್ಲ್ಡ್',
+      'message':'ಪ್ರೋಟೋ ಕೋಡರ್ ಪಾಯಿಂಟ್‌ಗೆ ಸುಸ್ವಾಗತ',
+      'title':'ಬೀಸು ಭಾಷೆ - ಸ್ಥಳೀಕರಣ',
+      'subscribe':'ವಂತಿಗೆ ಕೊಡು',
+      'changelang':'ಭಾಷೆ ಬದಲಿಸಿ'
+    }
+  };
+}
+
+/***************create a method thats store Locale******************/
+
+  final List locale =[
+    {'name':'ENGLISH','locale': Locale('en','US')},
+    {'name':'ಕನ್ನಡ','locale': Locale('kn','IN')},
+    {'name':'हिंदी','locale': Locale('hi','IN')},
+  ];
+
+/********update language in ui************/
+updateLanguage(Locale locale){
+    Get.back();
+    Get.updateLocale(locale);
+  }
+  
+  /*********declare  materialapp to getMaterialApp*********/
+  
+  return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      translations: LocaleString(),
+      locale: Locale('en','US'), // this is default language
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: HomePage(),
+    );
+    
+    /**************toChangeTextLanguage**************/
+    
+    "key".tr   /**where key is same which is in your localeString class**/ exp "hello".tr
