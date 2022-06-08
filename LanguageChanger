@@ -38,11 +38,11 @@ class LocaleString extends Translations{
 
 /***************create a method thats store Locale******************/
 
-  final List locale =[
-    {'name':'ENGLISH','locale': Locale('en','US')},
-    {'name':'ಕನ್ನಡ','locale': Locale('kn','IN')},
-    {'name':'हिंदी','locale': Locale('hi','IN')},
-  ];
+  static Map<String,Locale> locale={"English":Locale('en','US'),
+    "Spanish":Locale('es',''),
+    "Italian":Locale('it','')
+  };
+
 
 /********update language in ui************/
 updateLanguage(Locale locale){
