@@ -16,7 +16,7 @@ output-localization-file: app_localizations.dart
   "displayText":"यह एक सैंपल ऐप है"
 }
 
-/************in MaterialApp add the following lines************/
+/************in MaterialApp add the following lines************/ and import this(import 'package:flutter_gen/gen_l10n/app_localizations.dart')
  onGenerateTitle: (context) => AppLocalizations.of(context).helloWorld,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
