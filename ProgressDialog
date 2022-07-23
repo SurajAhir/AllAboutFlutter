@@ -1,0 +1,20 @@
+ //paste this this method in your class
+ 
+ showLoaderDialog(BuildContext context){
+    AlertDialog alert=AlertDialog(
+      content: Row(
+        children: [
+          const CircularProgressIndicator(),
+          Container(margin: const EdgeInsets.only(left: 7),child:const Text("Loading..." )),
+        ],),
+    );
+    showDialog(barrierDismissible: false,   //this is default method which flutter provides
+      context:context,
+      builder:(BuildContext context){
+        return alert;
+      },
+    );
+  }
+  
+  //if you want to dissmiss this dialog simply call this
+  Navigation.pop(context)//provide context ,whom you want to dissmiss
