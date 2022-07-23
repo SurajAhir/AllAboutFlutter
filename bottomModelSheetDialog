@@ -1,0 +1,17 @@
+showModalBottomSheet(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(10),
+                                    topLeft: Radius.circular(10)),
+                              ),
+                              context: context,
+                              builder: (context) =>
+                                  ShowNodesForCreateNew(context) //create a custom widget as you want
+                                  ).then((value){ //this is when you have to receive data from the dialog
+                           if(value!=null){
+                             setState((){
+                               debugPrint(value.toString());
+                               
+                             });
+                           }
+                          });
