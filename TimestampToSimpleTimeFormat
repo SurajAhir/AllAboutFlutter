@@ -1,0 +1,45 @@
+  String readTimestamp(int lastActivityData) {
+    var now = DateTime.now();
+    var format = DateFormat('HH:mm a');
+    var date = DateTime.fromMillisecondsSinceEpoch(lastActivityData * 1000);
+    String time = "";
+    if (now.year == date.year) {
+      if (date.month == now.month) {
+        if (date.day == now.day) {
+          if (date.hour == now.hour) {
+            if (now.minute - date.minute < 2) {
+              time = "a moment ago";
+            } else {
+              time = "${now.minute - date.minute} minutes ago";
+            }
+          } else if (date.hour < now.hour) {
+            var timeInMinuts = (now.hour - date.hour) * 60 + now.minute;
+            if (timeInMinuts - date.minute < 60) {
+              time = "${(timeInMinuts - date.minute).abs()} minutes ago";
+            } else {
+              time = "${now.hour - date.hour} hour ago";
+            }
+          }
+        } else {
+          if (now.day - date.day < 2) {
+            time = "${now.day - date.day} day ago";
+          } else {
+            time = "${now.day - date.day} days ago";
+          }
+        }
+      } else {
+        if (now.month - date.month < 2) {
+          time = "${now.month - date.month} month ago";
+        } else {
+          time = "${now.month - date.month} months ago";
+        }
+      }
+    } else {
+      if ((now.year - 100) - (date.year - 100) < 2) {
+        time = "${(now.year - 100) - (date.year - 100)} year ago";
+      } else {
+        time = "${(now.year - 100) - (date.year - 100)} years ago";
+      }
+    }
+    return time;
+  }
