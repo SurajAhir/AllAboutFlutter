@@ -1,0 +1,232 @@
+/***************add dependency of "Provider" and "SharedPreferences"
+
+/*************Create a class named Style**********************/
+
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+
+class Styles {
+
+  static ThemeData themeData(bool isDarkTheme, BuildContext context) {
+    return ThemeData(
+      primarySwatch: Colors.red,
+      bottomAppBarColor: isDarkTheme ? Color(0xff282525): Colors.white,
+      primaryColor: isDarkTheme ? Colors.white : Colors.lightBlueAccent,
+
+        buttonColor: isDarkTheme ? Color(0xffb1aaaa) : Color(0xffb1aaaa),
+      indicatorColor: isDarkTheme ? Colors.orangeAccent : Colors.orangeAccent,
+      backgroundColor: isDarkTheme ? Colors.black : Color(0xffdfd7d7),
+      accentColor: isDarkTheme ? Colors.white : Colors.black,
+
+
+splashColor: isDarkTheme ? Colors.black: Colors.black,
+
+      hintColor: isDarkTheme ? Color(0xff280C0B) : Color(0xffEECED3),
+
+      highlightColor: isDarkTheme ? Color(0xff372901) : Color(0xffFCE192),
+      hoverColor: isDarkTheme ? Color(0xff3A3A3B) : Color(0xff4285F4),
+
+      focusColor: isDarkTheme ? Colors.white : Color(0xffA8DAB5),
+      disabledColor: Colors.grey,
+      cardColor: isDarkTheme ? Color(0xFF151515) : Colors.white,
+      canvasColor: isDarkTheme ? Colors.white : Colors.grey[50],
+      brightness: isDarkTheme ? Brightness.dark : Brightness.light,
+      buttonTheme: Theme.of(context).buttonTheme.copyWith(
+          colorScheme: isDarkTheme ? ColorScheme.dark() : ColorScheme.light()),
+      appBarTheme: AppBarTheme(
+        elevation: 0.0,
+        backgroundColor:isDarkTheme ? Colors.black: Colors.black,
+      ), textSelectionTheme: TextSelectionThemeData(selectionColor: isDarkTheme ? Colors.white : Colors.black),
+
+    );
+
+  }
+}
+
+
+/*********create a class DarkThemePreference***********************/
+import 'package:shared_preferences/shared_preferences.dart';
+class DarkThemePreference {
+  static const THEME_STATUS = "THEMESTATUS";
+
+  setDarkTheme(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(THEME_STATUS, value);
+  }
+
+   getTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(THEME_STATUS) ?? false;
+  }
+}
+
+
+/***********************create a class MyProvider and add this lines********************/
+late DarkThemePreference darkThemePreference;
+  late bool _darkTheme;
+
+  bool get darkTheme => _darkTheme;
+MyProvider(){
+  darkThemePreference=DarkThemePreference();
+  _darkTheme=false;
+  getThemePreferences();
+}
+  set darkTheme(bool value) {
+    _darkTheme = value;
+    darkThemePreference.setDarkTheme(value);
+    notifyListeners();
+  }
+  getThemePreferences() async{
+  _darkTheme=await darkThemePreference.getTheme();
+  notifyListeners();
+  }
+  
+  
+  /*********************** in main.dart file add this lines********************/
+  
+  
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:technofino/provider/MyProvider.dart';
+import 'package:technofino/ui/conversation/ShowConversations.dart';
+import 'package:technofino/ui/HomePage.dart';
+import 'package:technofino/ui/login.dart';
+import 'package:technofino/ui/splash.dart';
+
+import 'dark_them/Styles.dart';
+import 'language_change/LocalString.dart';
+void main() {
+  Provider.debugCheckInvalidValueType = null;
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  MyProvider themeChangeProvider = MyProvider();
+  @override
+  initState(){
+    super.initState();
+    getCurrentTheme();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return  ChangeNotifierProvider<MyProvider>(create: (context)=>MyProvider(),
+    child: Consumer<MyProvider>(
+        builder: (BuildContext context,MyProvider provider,Widget? child){
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme:     Styles.themeData(provider.darkTheme, context),  //add this in your main.dart
+            ),
+            home: const SplashScreen(),
+            routes: {
+              "/login":(context)=>const Login(),
+              "/home":(context)=>const HomePage(),
+              "/conversations":(context)=>const ShowConversations(),
+            },
+          );
+        }
+    ),);
+
+  }
+
+ 
+  void getCurrentTheme()async {
+    themeChangeProvider.darkTheme =
+        await themeChangeProvider.darkThemePreference.getTheme();
+  }
+}
+
+
+
+
+/***************Now create a ChangeAppThem class to Change them *****************************/
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import '../../provider/MyProvider.dart';
+class ChangeAppThem extends StatefulWidget {
+  const ChangeAppThem({Key? key}) : super(key: key);
+
+  @override
+  State<ChangeAppThem> createState() => _ChangeAppThemState();
+}
+
+class _ChangeAppThemState extends State<ChangeAppThem> {
+  @override
+  Widget build(BuildContext context) {
+    final themeChange = Provider.of<MyProvider>(context);
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+        appBar: AppBar(
+          title: Text(
+            "dark_mode".tr,                                                               
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Theme.of(context).accentColor //Call this to access them(define your colors in Style class)
+            ),
+          ),
+          automaticallyImplyLeading: false,
+          backgroundColor: Theme.of(context).bottomAppBarColor,
+        ),
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Scaffold(
+            backgroundColor: Colors.black12,
+            body: Container(
+              height: 250,
+              margin: EdgeInsets.all(15),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  color: Theme.of(context).bottomAppBarColor
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: (){
+                        themeChange.darkTheme = true;
+                      },
+                      child: ListTile(
+                        leading:themeChange.darkTheme==true?Icon(Icons.check):SizedBox(),
+                        title: Text("On"),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: (){
+                        themeChange.darkTheme = false;
+                      },
+                      child: ListTile(
+                        leading: themeChange.darkTheme==false?Icon(Icons.check):SizedBox(),
+                        title: Text("Off"),
+                      ),
+                    ),
+                    // InkWell(
+                    //   onTap: () async{
+                    //
+                    //   },
+                    //   child: ListTile(
+                    //     leading: Provider.of<MyProvider>(context).language=="Vietnamese"?Icon(Icons.check):SizedBox(),
+                    //     title: Text("System"),
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        )
+    );
+  }
+
+}
+
