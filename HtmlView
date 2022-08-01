@@ -1,0 +1,121 @@
+ flutter_html: ^2.2.1
+ 
+ Html(
+                                                        data: getFilteredMessage(
+                                                            posts[index]
+                                                                .message_parsed,
+                                                            posts[index]),
+                                                        style: {
+                                                          "body": Style(
+                                                              fontSize:
+                                                              FontSize(
+                                                                  14),
+                                                              letterSpacing:
+                                                              1),
+                                                          "table": Style(
+                                                            fontFamily: "arial, sans-serif",
+                                                            backgroundColor:
+                                                            const Color
+                                                                .fromARGB(
+                                                                0x50,
+                                                                0xee,
+                                                                0xee,
+                                                                0xee),
+                                                          ),
+                                                          "blockquote": Style(
+                                                            border:
+                                                            const Border(
+                                                              left: BorderSide(
+                                                                  color: Colors.lightBlueAccent,
+                                                                  width:
+                                                                  2.0,
+                                                                  style: BorderStyle
+                                                                      .solid),
+                                                            ),
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                left:
+                                                                10,top: 4,bottom: 5),
+                                                            margin:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                left:
+                                                                7),
+                                                            backgroundColor: provider.darkTheme?Colors.transparent:Color(0xffe5f6f4),
+                                                          ),
+                                                          // "tr": Style(
+                                                          //   border: const Border(
+                                                          //       bottom: BorderSide(
+                                                          //           color: Colors
+                                                          //               .grey)),
+                                                          // ),
+                                                          "th": Style(
+                                                            padding:
+                                                            EdgeInsets
+                                                                .all(6),
+                                                            backgroundColor:
+                                                            Colors.grey,
+                                                            border: Border.all(color: Colors
+                                                                .black),
+                                                          ),
+                                                          "td": Style(
+                                                            backgroundColor: Colors.white,
+                                                            padding:
+                                                            EdgeInsets
+                                                                .all(6),
+                                                            border:  Border.all(color: Colors
+                                                                .black),
+                                                          ),
+                                                          'h5': Style(
+                                                              maxLines: 2,
+                                                              textOverflow:
+                                                              TextOverflow
+                                                                  .ellipsis),
+                                                        },
+                                                        customRender: {
+                                                          "table": (context,
+                                                              child) {
+                                                            return SingleChildScrollView(
+                                                              scrollDirection:
+                                                              Axis.horizontal,
+                                                              child: (context
+                                                                  .tree
+                                                              as TableLayoutElement)
+                                                                  .toWidget(
+                                                                  context),
+                                                            );
+                                                          },
+                                                        },
+                                                        onLinkTap: (url, _,
+                                                            __, ___) {
+                                                          debugPrint(
+                                                              "Opening $url...");
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      MyWebView(
+                                                                          url.toString())));
+                                                        },
+                                                        onImageTap: (src, _,
+                                                            __, ___) {
+                                                          debugPrint(src);
+                                                          var att = posts[
+                                                          index]
+                                                              .Attachments;
+                                                          att?.forEach(
+                                                                  (element) {
+                                                                if (src ==
+                                                                    element
+                                                                        .thumbnail_url) {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder:
+                                                                              (context) =>
+                                                                              ShowImage(element.attachment_id)));
+                                                                }
+                                                              });
+                                                        },
+                                                      )
