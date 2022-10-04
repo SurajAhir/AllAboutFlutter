@@ -1,0 +1,38 @@
+1st Method*****************************
+
+String fileName = image.path.split('/').last;
+        Dio dio = new Dio();
+        FormData formData = new FormData.fromMap({
+          'attachment': await MultipartFile.fromFile(
+            image.path,
+            filename: fileName,
+          ),
+          "key": attachmentKey
+        });
+        Response response1 =
+            await dio.post('https://technofino.in/community/api/attachments/',
+                data: formData,
+                options: Options(
+                  headers: {
+                    "XF-Api-Key": MyDataClass.api_key,
+                    "XF-Api-User": MyDataClass.myUserId,
+                    "Content-Type": "multipart/form-data"
+                  },
+                ), onSendProgress: (a, b) {
+          var per = a / b * 100;
+          var percent = per.floor();
+          provider.changePercentage(percent);
+        });
+        
+        
+        
+ 2nd Method**************************************     
+ 
+   @MultiPart()
+  @POST("attachments/")
+  Future<Map<String, AttachmentsData>> postAttachmentFile(
+      @Header("XF-Api-Key") String api_key,
+      @Header("XF-Api-User") int user_id,
+      @Part(name: "attachment") File file,
+      @Part(name: "key") String attachmentKey);
+      
