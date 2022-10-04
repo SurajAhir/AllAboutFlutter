@@ -1,0 +1,23 @@
+  /******************************import *****************************(http:any)
+  
+  var map = {
+      "payment_method_types[]": "card",
+      "currency": "INR",
+      "amount": "10000"
+    };
+
+    final response = await http.post(
+      Uri.parse('https://api.stripe.com/v1/payment_intents'),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        'Authorization': 'Bearer sk_test_51Losh4SHTMXIWpOLKZ2vXxP4RfRnJrOj5hwvh6eHWVwQogYpimBs2YehB2Bx3Yjj5Y5pIiliueKzjQp6rmqLx7p800BgAf3tp1'
+      },
+      encoding: Encoding.getByName('utf-8'),
+      body: map,
+    );
+
+    if (response.statusCode == 200) {
+   debugPrint("succes");
+    } else {
+      debugPrint("some error occured");
+    }
