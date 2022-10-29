@@ -1,0 +1,113 @@
+step 1st---------------add this two plugins in your pupspec.yml
+  flutter_background_service: ^2.4.5
+  device_info_plus: any
+  
+  
+ ------------step 2nd --------------
+ 
+ 
+Future<void> main() async {
+    WidgetsFlutterBinding.ensureInitialized(); //add this
+    await initializeService();  //add this 
+
+    runApp(MyApp());
+}
+
+------step 3rd---------------
+
+Future<void> initializeService() async {
+  final service = FlutterBackgroundService();
+
+  await service.configure(
+      androidConfiguration: AndroidConfiguration(
+        // this will be executed when app is in foreground or background in separated isolate
+        onStart: onStart,
+
+        // auto start service
+        autoStart: true,
+        isForegroundMode: true,
+      ),
+      iosConfiguration: IosConfiguration(  //for ios
+        autoStart: true,
+        onForeground: onStart,
+        onBackground: onIosBackground,
+      ));
+}
+
+
+
+--------step 4 -------go through this documentation for ios setup
+https://pub.dev/packages/flutter_background_service
+
+
+//for ios
+@pragma('vm:entry-point')
+Future<bool> onIosBackground(ServiceInstance service) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  DartPluginRegistrant.ensureInitialized();
+
+  return true;
+}
+
+@pragma('vm:entry-point')
+void onStart(ServiceInstance service) async {
+  // Only available for flutter 3.0.0 and later
+  DartPluginRegistrant.ensureInitialized();
+
+  if (service is AndroidServiceInstance) {
+    service.on('setAsForeground').listen((event) {
+      service.setAsForegroundService();
+    });
+
+    service.on('setAsBackground').listen((event) {
+      service.setAsBackgroundService();
+    });
+  }
+
+  service.on('stopService').listen((event) {
+    service.stopSelf();
+  });
+
+  // bring to foreground
+  Timer.periodic(const Duration(seconds: 60), (timer) async {
+    // if (service is AndroidServiceInstance) {
+    //   if (await service.isForegroundService()) {  //this is when you want to know service is forground or background
+    //
+    //     debugPrint("this is service*************************");
+   
+    //   }
+    // }
+
+    /// you can see this log in logcat
+    print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
+
+    // test using external plugin
+    final deviceInfo = DeviceInfoPlugin();
+    String? device;
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      device = androidInfo.model;
+      debugPrint("this is service*************************");
+       //perform your task here
+       
+       
+    }
+
+    if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      device = iosInfo.model;
+      debugPrint("this is service*************************");
+      //perform your task here
+      
+      
+    }
+
+    service.invoke(
+      'update',
+      {
+        "current_date": DateTime.now().toIso8601String(),
+        "device": device,
+      },
+    );
+  });
+}
