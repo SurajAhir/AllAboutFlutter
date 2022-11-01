@@ -1,0 +1,19 @@
+ //for write data
+ final Directory directory = await getApplicationDocumentsDirectory();
+    final File file = File('${directory.path}/my_file.txt');
+    final jsonStr = jsonEncode(map); // insert your data
+    var k=await file.writeAsString(jsonStr);
+
+    debugPrint(k.path);
+ 
+ 
+ //for read data
+    String text="";
+    try {
+      final Directory directory = await getApplicationDocumentsDirectory();
+      final File file = File('${directory.path}/my_file.txt');
+      text = await file.readAsString();
+    } catch (e) {
+      print("Couldn't read file");
+    }
+    var json=jsonDecode(text);
