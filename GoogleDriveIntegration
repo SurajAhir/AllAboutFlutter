@@ -1,0 +1,68 @@
+step 1st------------add this plugins
+  google_sign_in: ^5.4.2
+  googleapis: ^9.2.0
+  http: ^0.13.5
+  
+step 2nd ---------create a class named GoogleHttpClient
+
+import 'package:http/http.dart' as http;
+
+class GoogleAuthClient extends http.BaseClient {
+  final Map<String, String> _headers;
+
+  final http.Client _client = new http.Client();
+
+  GoogleAuthClient(this._headers);
+
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    return _client.send(request..headers.addAll(_headers));
+  }
+
+}
+
+
+
+step 3rd ------------------- method for uploading file to the drive
+ Future<void> uploadToDrive(File file) async {
+
+
+    final googleSignIn = signIn.GoogleSignIn.standard(
+        scopes: [drive.DriveApi.driveScope]);
+    final signIn.GoogleSignInAccount? account = await googleSignIn
+        .signIn();
+
+    final authHeaders = await account?.authHeaders;
+    final authenticateClient = GoogleAuthClient(authHeaders!);
+    final driveApi = drive.DriveApi(authenticateClient);
+
+    var media = drive.Media(file.openRead(), file.lengthSync());
+    var driveFile = drive.File();
+    // driveFile.title = file.path.split('/').last;
+    driveFile.title = "my_database.txt";
+    final result = await driveApi.files.insert(
+        driveFile, uploadMedia: media);
+    debugPrint("Upload result: $result");
+file_id=result.id??"";
+
+  }
+  
+  step 4th--------------method for downloading file from the drive
+  
+    getFileFromDrive() async{
+
+    final googleSignIn = signIn.GoogleSignIn.standard(
+        scopes: [drive.DriveApi.driveScope]);
+    final signIn.GoogleSignInAccount? account = await googleSignIn
+        .signIn();
+
+    final authHeaders = await account?.authHeaders;
+    final authenticateClient = GoogleAuthClient(authHeaders!);
+    final driveApi = drive.DriveApi(authenticateClient);
+
+   var result=await driveApi.files.get(file_id,downloadOptions: DownloadOptions.fullMedia) as Media;
+var stream=result.stream;
+
+    var j=json.decode(utf8.decode(await stream.first));
+    debugPrint(j.toString());
+
+  }
