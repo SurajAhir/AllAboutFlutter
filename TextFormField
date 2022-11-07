@@ -1,0 +1,39 @@
+TextFormField(
+                            controller: _thread_id_controller,
+                            keyboardType: TextInputType.number,
+                            style:
+                            TextStyle(color: Theme.of(context).accentColor),
+                            decoration: InputDecoration(
+                              // hintText: "Username or Email",
+                              hintText: "Insert Thread id",
+                              hintStyle: TextStyle(
+                                color: Theme.of(context).accentColor,
+                              ),
+                              prefixIcon: Icon(
+                                CupertinoIcons.number,
+                              ),
+                              contentPadding: EdgeInsets.only(left: 20, top: 13),
+                              border: InputBorder.none,
+                              fillColor: Theme.of(context).bottomAppBarColor,
+                              filled: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).bottomAppBarColor),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).bottomAppBarColor),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  debugPrint("this is email");
+                                  setState(() {
+                                    _thread_id_controller.text = "";
+                                  });
+                                },
+                                icon: Icon(Icons.clear),
+                              ),
+                            ),
+                          ),
