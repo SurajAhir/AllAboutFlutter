@@ -1,0 +1,124 @@
+import 'package:flutter/cupertino.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as join;
+
+import '../utils/Constants.dart';
+class DBHandler{
+  
+
+  Future<Database> createTable() async {
+
+    // Get a location using getDatabasesPath
+    var databasesPath = await getDatabasesPath();
+    String path = join.join(databasesPath, "product_management.db");
+    // open the database
+    Database database = await openDatabase(path, version: 1,
+        onCreate: (Database db, int version) async {
+          // When creating the db, create the table
+          await db.execute(
+              'CREATE TABLE IF NOT EXISTS product_information (id INTEGER PRIMARY KEY,'
+                  '${Constants.PRODUCT_CODE} TEXT,'
+                  '${Constants.SHADE_CODE} TEXT,'
+                  '${Constants.PACK_CODE} TEXT,'
+                  '${Constants.FACTORY_CODE} TEXT,'
+                  '${Constants.MANUFACTURING_DATE} TEXT,'
+                  '${Constants.QUANTITY} TEXT )'
+          );
+
+          await db.execute(
+              'CREATE TABLE IF NOT EXISTS depot_name (id INTEGER PRIMARY KEY,'
+                  '${Constants.DIPOT_NAME} TEXT,'
+                  '${Constants.ZONE_NAME} TEXT,'
+                  '${Constants.DATE} TEXT)'
+          );
+
+        });
+    return database;
+  }
+
+  // Insert some records in a table
+  Future<void> insert(Map<String,dynamic> map) async {
+    Database database=await createTable();
+    await database.transaction((txn) async {
+      int id = await txn.rawInsert(
+          'INSERT INTO products_information'
+              '(${Constants.PRODUCT_CODE},'
+              '${Constants.SHADE_CODE},'
+              ' ${Constants.PACK_CODE},'
+              ' ${Constants.FACTORY_CODE},'
+              ' ${Constants.MANUFACTURING_DATE},'
+              ' ${Constants.QUANTITY})'
+              'VALUES(?,?,?,?,?,?)',
+          [
+            map[Constants.PRODUCT_CODE],
+            map[Constants.SHADE_CODE],
+            map[Constants.PACK_CODE],
+            map[Constants.FACTORY_CODE],
+            map[Constants.MANUFACTURING_DATE],
+            map[Constants.QUANTITY]
+          ]);
+      debugPrint('inserted1: $id');
+    });
+  }
+
+
+  // Insert some records in a table
+  // Future<int> update(Map<String,dynamic> subjects, int id) async {
+  //   Database database=await createTable();
+  //   // debugPrint(subjects.get_subject_name!+"------------");
+  //   var id1 =await database.rawUpdate('''
+  //   UPDATE subjects_algorithm
+  //   SET ${Constants.SUBJECT_NAME} = ?,
+  //     ${Constants.SUBJECT_SPENDING_TIME} = ?,
+  //     ${Constants.SUBJECT_PENDING_TIME} = ?,
+  //     ${Constants.SUBJECT_STARTING_DATE} = ?,
+  //     ${Constants.SUBJECT_ENDING_DATE} = ?,
+  //     ${Constants.MONTH} = ?,
+  //     ${Constants.SUBJECT_MIN_TEACHING_TIME} = ?
+  //   WHERE id = ?
+  //   ''',
+  //       [subjects[Constants.SUBJECT_NAME],
+  //         subjects[Constants.SUBJECT_SPENDING_TIME],
+  //         subjects[Constants.SUBJECT_PENDING_TIME],
+  //         subjects[Constants.SUBJECT_STARTING_DATE],
+  //         subjects[Constants.SUBJECT_ENDING_DATE],
+  //         subjects[Constants.MONTH],
+  //         subjects[Constants.SUBJECT_MIN_TEACHING_TIME],
+  //         id
+  //       ]);
+  //   return id1;
+  // }
+
+
+
+  // Get the records
+  
+  Future<List<Map<String, Object?>>?> fetchAll(String table) async {
+    Database database=await createTable();
+    List<Map<String, Object?>>? list =
+    await database.rawQuery('SELECT * FROM $table');
+    return list;
+  }
+
+
+  // Future<List<Map<String, Object?>>?> getOneRecord(String subject_name) async {
+  //   Database database=await handler.createTable();
+  //   List<Map<String, Object?>>? list =
+  //   await database.rawQuery("""SELECT * FROM subjects_algorithm where ${Constants.SUBJECT_NAME}= '$subject_name'""");
+  //   return list;
+  // }
+}
+
+
+
+
+
+
+
+
+____________________________________dependencies________________________
+  shared_preferences: ^2.0.13
+  path_provider: ^2.0.11
+  permission_handler: ^8.0.0
+  sqflite: ^2.1.0+1
+  path: ^1.8.2
