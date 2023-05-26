@@ -1,0 +1,63 @@
+//website link _>>>>>>>>>>>>>>>>>>>>  https://www.appsdeveloperblog.com/calling-android-native-code-in-flutter/
+
+
+//Flutter code
+ElevatedButton(
+          onPressed: (){
+            _startActivity();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Start Android Activity',
+              style: TextStyle(color: Colors.white,fontSize: 24),
+            ),
+          ),
+        ),
+        
+// define method _startActivity()  
+
+  Future<void> _startActivity() async {
+    try {
+      final dynamic result = await platform.invokeMethod('getData');
+
+      debugPrint('Result: ${result.toString()} ');
+    } on PlatformException catch (e) {
+      debugPrint("Error: '${e.message}'.");
+    }
+  }
+  
+  
+  
+  
+  //Android code here in main activity
+  
+  import androidx.annotation.NonNull
+import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodChannel
+
+class MainActivity: FlutterActivity() {
+
+    private val CHANNEL = "samples.flutter.dev/battery";
+    override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
+            // Note: this method is invoked on the main thread.
+                call, result ->
+            if (call.method == "getData") {
+
+                val batteryLevel = 100;
+
+                if (batteryLevel != -1) {
+                    result.success(batteryLevel)
+                } else {
+                    result.error("UNAVAILABLE", "Battery level not available.", null)
+                }
+            } else {
+                result.notImplemented()
+            }
+        }
+    }
+}
+  
