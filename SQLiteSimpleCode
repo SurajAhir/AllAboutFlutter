@@ -62,7 +62,7 @@ class DBHandler{
   }
 
 
-  // Insert some records in a table
+  // Insert some records in a table using query
   // Future<int> update(Map<String,dynamic> subjects, int id) async {
   //   Database database=await createTable();
   //   // debugPrint(subjects.get_subject_name!+"------------");
@@ -90,9 +90,26 @@ class DBHandler{
   // }
 
 
+//delete
+Future<List<Map<String, Object?>>?> delete(int id) async {
+    Database database = await createTable();
+    List<Map<String, Object?>>? list =
+    await database.rawQuery('DELETE FROM ${Constant.voucherDetails} where id= $id');
+    return list;
+  }
+
+
+
+//update using update function easy to use
+  Future<void> update(String id, Map<String, Object> data) async {
+    final db =  await createTable();
+
+    db.update(Constant.voucherDetails, data, where: '${Constant.voucherDetailsCurrentId} = ?', whereArgs: [id]);
+  }
+
+
 
   // Get the records
-  
   Future<List<Map<String, Object?>>?> fetchAll(String table) async {
     Database database=await createTable();
     List<Map<String, Object?>>? list =
