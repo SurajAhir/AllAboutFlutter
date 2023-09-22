@@ -61,8 +61,14 @@ class DBHandler{
     });
   }
 
+//inserting using method easy to use
+static Future<void> insert(String table, Map<String, Object> data) async {
+    final db = await createTable();
+    db.insert(table, data);
+  }
 
-  // Insert some records in a table using query
+
+  // update some records in a table using query
   // Future<int> update(Map<String,dynamic> subjects, int id) async {
   //   Database database=await createTable();
   //   // debugPrint(subjects.get_subject_name!+"------------");
