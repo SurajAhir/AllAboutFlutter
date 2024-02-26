@@ -1,0 +1,67 @@
+// device_info_plus: any
+path_provider: ^2.0.11
+  permission_handler: ^10.2.0
+  path: ^1.8.2
+
+
+// check permision
+
+ Future<bool> requestPermission() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    bool isPermissionGranted=false;
+    bool storagePermission = await Permission.storage.isGranted;
+    bool mediaPermission = await Permission.accessMediaLocation.isGranted;
+    bool manageExternal = await Permission.manageExternalStorage.isGranted;
+
+    if(androidInfo.version.sdkInt<30){
+      if (!mediaPermission) {
+        mediaPermission =
+        await Permission.accessMediaLocation.request().isGranted;
+      }
+
+      if (!storagePermission) {
+        storagePermission =
+        await Permission.storage.request().isGranted;
+      }
+      isPermissionGranted=mediaPermission && storagePermission;
+    }
+
+    if(androidInfo.version.sdkInt>=30){
+      if (!mediaPermission) {
+        mediaPermission =
+        await Permission.accessMediaLocation.request().isGranted;
+      }
+
+      if (!manageExternal) {
+        manageExternal =
+        await Permission.manageExternalStorage.request().isGranted;
+      }
+
+      isPermissionGranted=mediaPermission && manageExternal;
+    }
+
+
+
+    debugPrint("--------------$isPermissionGranted");
+    if (isPermissionGranted) {
+      return true;
+    } else {
+      return false;
+    }}
+
+/*****************************create folder***************
+
+ Future<Directory> _createFolder()async{
+    final folderName="StockTaking";
+    final path= Directory("storage/emulated/0/$folderName");
+    if ((await path.exists())){
+      // TODO:
+      print("exist");
+    }else{
+      // TODO:
+      print("not exist");
+      path.create();
+    }
+    return path;
+  }
