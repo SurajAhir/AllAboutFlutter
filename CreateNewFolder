@@ -3,9 +3,29 @@ path_provider: ^2.0.11
   permission_handler: ^10.2.0
   path: ^1.8.2
 
+//1st way no permission needed ...because we create a folder in existing folder of your phone..like Documents folder
+
+ Directory directory = Directory("storage/emulated/0/Documents/StockTaking");
+
+File file = await File("${directory.path}/YourFileName.xlsx");
+
+                                if (file.existsSync()) {
+                                  file.writeAsBytes(bytes);
+                                } else {
+                                  file = await new File(
+                                          "${directory.path}/YourFileName.xlsx")
+                                      .create(recursive: true);
+                                  file.writeAsBytes(bytes);
+                                }
+
+
+
+
+
+
+//2nd way----not recommended --------------
 
 // check permision
-
  Future<bool> requestPermission() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
